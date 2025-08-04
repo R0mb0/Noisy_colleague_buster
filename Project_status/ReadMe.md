@@ -32,7 +32,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 - [X] **Scrivere uno script Python per rilevare il microfono collegato**
 - [X] **Testare la registrazione di audio dal microfono**
 - [X] **Implementare la lettura continua del livello di volume (RMS o altro)**
-- [ ] **Gestire errori di acquisizione o assenza microfono**
+- [X] **Gestire errori di acquisizione o assenza microfono**
 
 ---
 
