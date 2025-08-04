@@ -7,7 +7,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 1. Preparazione Hardware
 
-- [ ] **Procurare e assemblare i componenti:**
+- [X] **Procurare e assemblare i componenti:**
   - Raspberry Pi 3B+ con alimentazione
   - Microfono USB compatibile
   - Altoparlante (jack 3.5mm o USB)
