@@ -64,7 +64,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 7. Invio Dati a ThingSpeak
 
-- [ ] **Registrare un account ThingSpeak e creare un canale**
+- [X] **Registrare un account ThingSpeak e creare un canale**
 - [ ] **Configurare API KEY e parametri di accesso**
 - [ ] **Implementare invio dati (timestamp, livello rumore) via HTTP REST API**
 - [ ] **Gestire errori di invio e ritentativi**
