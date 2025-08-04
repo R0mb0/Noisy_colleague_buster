@@ -23,7 +23,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 - [X] **Abilitare e testare la connessione di rete (LAN/WiFi)**
 - [X] **Configurare accesso SSH e SFTP per gestione remota**
 - [X] **Installare Python 3 e pip**
-- [ ] **Installare librerie audio Python (PyAudio, SoX, ALSA, ecc.)**
+- [X] **Installare librerie audio Python (PyAudio, SoX, ALSA, ecc.)**
 
 ---
 
