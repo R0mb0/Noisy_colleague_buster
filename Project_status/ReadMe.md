@@ -29,7 +29,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 3. Acquisizione Audio
 
-- [ ] **Scrivere uno script Python per rilevare il microfono collegato**
+- [X] **Scrivere uno script Python per rilevare il microfono collegato**
 - [ ] **Testare la registrazione di audio dal microfono**
 - [ ] **Implementare la lettura continua del livello di volume (RMS o altro)**
 - [ ] **Gestire errori di acquisizione o assenza microfono**
