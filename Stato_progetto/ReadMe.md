@@ -11,7 +11,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
   - Raspberry Pi 3B+ con alimentazione
   - Microfono USB compatibile
   - Altoparlante (jack 3.5mm o USB)
-- [ ] **Collegare il microfono USB e verificare che venga riconosciuto dal sistema**
+- [X] **Collegare il microfono USB e verificare che venga riconosciuto dal sistema**
 - [ ] **Collegare l’altoparlante e verificarne il funzionamento audio**
 
 ---
