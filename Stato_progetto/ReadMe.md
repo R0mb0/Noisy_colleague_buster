@@ -12,7 +12,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
   - Microfono USB compatibile
   - Altoparlante (jack 3.5mm o USB)
 - [X] **Collegare il microfono USB e verificare che venga riconosciuto dal sistema**
-- [ ] **Collegare l’altoparlante e verificarne il funzionamento audio**
+- [X] **Collegare l’altoparlante e verificarne il funzionamento audio**
 
 ---
 
