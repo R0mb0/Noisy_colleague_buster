@@ -18,10 +18,10 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 2. Configurazione di Sistema
 
-- [ ] **Installare Raspberry Pi OS (Legacy) with Desktop**
-- [ ] **Aggiornare il sistema operativo e i pacchetti**
-- [ ] **Abilitare e testare la connessione di rete (LAN/WiFi)**
-- [ ] **Configurare accesso SSH e SFTP per gestione remota**
+- [X] **Installare Raspberry Pi OS (Legacy) with Desktop**
+- [X] **Aggiornare il sistema operativo e i pacchetti**
+- [X] **Abilitare e testare la connessione di rete (LAN/WiFi)**
+- [X] **Configurare accesso SSH e SFTP per gestione remota**
 - [ ] **Installare Python 3 e pip**
 - [ ] **Installare librerie audio Python (PyAudio, SoX, ALSA, ecc.)**
 
