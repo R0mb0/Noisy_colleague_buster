@@ -1,5 +1,16 @@
 // Runs after DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
+    // --- Default "center" values (hardcoded, do not change unless you want to shift the reference) ---
+    const paramCenters = {
+        "THRESHOLD_DBFS": -25.0,
+        "LOCKOUT_SEC": 2.0,
+        "ECHO_DELAY_SEC": 0.25,
+        "ECHO_TAPS": 3,
+        "ECHO_FEEDBACK": 0.5,
+        "ECHO_START_VOL": 1.0,
+        "ECHO_END_VOL": 0.3
+    };
+
     const colDefs = [
         // label, type, param, min, max, step, format, extra
         { label: "VOLUME", type: "vmeter" },
@@ -26,6 +37,29 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     let current = {}; // Holds latest status
+
+    // --- Fetch initial values from backend before rendering UI ---
+    let initialValues = {};
+    try {
+        const resp = await fetch("/api/status");
+        if (resp.ok) {
+            const data = await resp.json();
+            initialValues = {
+                "THRESHOLD_DBFS": data.threshold_dbfs,
+                "LOCKOUT_SEC": data.lockout_sec,
+            };
+            if (data.echo_params) {
+                initialValues["ECHO_DELAY_SEC"] = data.echo_params.delay_sec;
+                initialValues["ECHO_TAPS"] = data.echo_params.taps;
+                initialValues["ECHO_FEEDBACK"] = data.echo_params.feedback;
+                initialValues["ECHO_START_VOL"] = data.echo_params.start_vol;
+                initialValues["ECHO_END_VOL"] = data.echo_params.end_vol;
+            }
+        }
+    } catch (e) {
+        // If cannot fetch, fallback to centers
+        initialValues = {...paramCenters};
+    }
 
     function createCol(def, idx) {
         const col = document.createElement("div");
@@ -88,18 +122,27 @@ document.addEventListener("DOMContentLoaded", function() {
             slider.min = def.min;
             slider.max = def.max;
             slider.step = def.step;
-            slider.value = def.min;
-            // --- FIX: FORCE SIZE & MARGIN FOR VERTICAL SLIDER ---
-            slider.style.width = "30px";
-            slider.style.height = "180px";
-            slider.style.margin = "8px auto";
+
+            // --- Set initial value from backend/status ---
+            let initial = initialValues[def.param];
+            if (initial === undefined || initial === null) initial = paramCenters[def.param];
+            slider.value = initial;
+
             slider.paramDef = def;
+
+            // --- Add marker for "center" reference value ---
+            const marker = document.createElement("div");
+            marker.className = "slider-center-marker";
+            let centerVal = paramCenters[def.param];
+            let percent = (centerVal - def.min) / (def.max - def.min);
+            marker.style.top = (100 - percent * 100) + "%";
+            col.appendChild(marker);
 
             // Value display
             const value = document.createElement("div");
             value.className = "slider-value";
             value.id = `sliderval-${def.param}`;
-            value.textContent = def.format(def.min);
+            value.textContent = def.format(Number(slider.value));
 
             slider.addEventListener("input", function(e) {
                 value.textContent = def.format(Number(slider.value));
@@ -194,10 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     c.lampLabel.textContent = state ? c.lampOnLabel : c.lampOffLabel;
                 }
                 if (c.timerValue && data.echo_params) {
-                    // Simulate current echo level
                     let start = data.echo_params.start_vol, end = data.echo_params.end_vol;
-                    // For now, show the current value as end_vol if not actively echoing
-                    // (You can improve by showing actual fade progress if you expose that from API)
                     c.timerValue.textContent = (data.echo_params.active ? start : end).toFixed(2);
                 }
             }
