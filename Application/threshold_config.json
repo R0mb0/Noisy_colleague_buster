@@ -1,0 +1,9 @@
+{
+  "THRESHOLD_DBFS": -25.0,
+  "LOCKOUT_SEC": 2.0,
+  "ECHO_DELAY_SEC": 0.25,
+  "ECHO_TAPS": 3,
+  "ECHO_FEEDBACK": 0.5,
+  "ECHO_START_VOL": 1.0,
+  "ECHO_END_VOL": 0.3
+}

@@ -1,0 +1,252 @@
+body.dark-bg {
+    background: #181A21;
+    color: #eee;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+}
+.login-container {
+    background: #23252b;
+    padding: 40px 30px;
+    border-radius: 16px;
+    margin: 100px auto 0;
+    max-width: 350px;
+    box-shadow: 0 0 32px #000a;
+    text-align: center;
+}
+.login-title {
+    margin-bottom: 32px;
+    color: #40d9ff;
+    font-size: 1.8em;
+    letter-spacing: 1px;
+}
+.login-form input[type="password"] {
+    padding: 10px;
+    font-size: 1.1em;
+    width: 90%;
+    border-radius: 7px;
+    border: none;
+    margin-bottom: 20px;
+    background: #222;
+    color: #eee;
+}
+.login-form button {
+    padding: 10px 40px;
+    background: #40d9ff;
+    color: #181A21;
+    font-weight: bold;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: background 0.2s;
+}
+.login-form button:hover {
+    background: #1abc9c;
+}
+.login-msg {
+    margin-top: 22px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 0;
+}
+.login-msg.red { color: #ff5050; }
+.login-msg.green { color: #00ff7f; }
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #23252b;
+    padding: 16px 28px;
+    border-bottom: 2px solid #101219;
+}
+.logout-btn {
+    color: #ff5050;
+    background: none;
+    border: 1px solid #ff5050;
+    border-radius: 7px;
+    padding: 8px 18px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.2s, color 0.2s;
+}
+.logout-btn:hover {
+    background: #ff5050;
+    color: #23252b;
+}
+
+.mixer-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 32px 12px 40px 12px;
+    min-height: 70vh;
+}
+#mixer-columns {
+    display: flex;
+    gap: 32px;
+}
+.mixer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 74px;
+    min-height: 320px;
+    background: #23252b;
+    border-radius: 16px;
+    box-shadow: 0 1px 6px #0007;
+    padding: 12px 5px 20px 5px;
+    position: relative;
+    overflow: visible;
+}
+.mixer-label {
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #40d9ff;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+.vmeter {
+    width: 30px;
+    height: 220px;
+    background: linear-gradient(to top, #ff5050 0% 30%, #ffe066 30% 65%, #40ff8f 65% 100%);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px #0006;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+}
+.vmeter-bar {
+    width: 100%;
+    border-radius: 6px;
+    background: #fff9;
+    transition: height 0.15s;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.vmeter-scale {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 38px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #bbb;
+    pointer-events: none;
+}
+.lamp {
+    margin: 20px 0 10px 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #333;
+    box-shadow: 0 0 10px #0007;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #222;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.lamp.green {
+    background: radial-gradient(circle at 60% 40%, #00ff7f 70%, #029a4f 100%);
+    box-shadow: 0 0 24px #00ff7f, 0 0 2px #fff;
+}
+.lamp.red {
+    background: radial-gradient(circle at 60% 40%, #ff5050 70%, #c90303 100%);
+    box-shadow: 0 0 24px #ff5050, 0 0 2px #fff;
+}
+
+/* --- VERTICAL SLIDER: no rotation, native vertical, fills the column --- */
+.slider-vert {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;      /* visual width of the vertical slider */
+    height: 180px;    /* visual height of the vertical slider */
+    background: #222;
+    border-radius: 8px;
+    outline: 0;
+    margin: 8px 0;
+    display: block;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.slider-vert::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #40d9ff;
+    border: 2px solid #eee;
+    box-shadow: 0 0 8px #2ee;
+    cursor: pointer;
+}
+.slider-vert::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #40d9ff;
+    border: 2px solid #eee;
+    box-shadow: 0 0 8px #2ee;
+    cursor: pointer;
+}
+.slider-vert:focus {
+    outline: none;
+}
+.slider-vert::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12px;
+    background: #222;
+    border-radius: 8px;
+}
+.slider-vert::-moz-range-track {
+    width: 100%;
+    height: 12px;
+    background: #222;
+    border-radius: 8px;
+}
+.slider-vert::-ms-fill-lower,
+.slider-vert::-ms-fill-upper {
+    background: #222;
+    border-radius: 8px;
+}
+.slider-vert:focus::-webkit-slider-runnable-track {
+    background: #222;
+}
+
+/* --- Slider value at the bottom of the column --- */
+.slider-value {
+    color: #ffe066;
+    font-size: 1.1em;
+    margin-top: auto;
+    margin-bottom: 0;
+    font-family: monospace;
+    align-self: center;
+}
+
+.timer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 180px;
+    justify-content: center;
+}
+.timer-value {
+    color: #40d9ff;
+    font-size: 1.8em;
+    font-family: monospace;
+    margin-top: 15px;
+    margin-bottom: 8px;
+}

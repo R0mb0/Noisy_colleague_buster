@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Noise Mixer Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark-bg">
+    <div class="login-container">
+        <h1 class="login-title">IoT Anti-Colleague Mixer</h1>
+        <form method="POST" class="login-form">
+            <input type="password" name="password" placeholder="Password" autofocus autocomplete="off" required>
+            <button type="submit">Login</button>
+        </form>
+        {% if msg %}
+        <div class="login-msg {{ color }}">{{ msg }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Noise Mixer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='mixer.js') }}"></script>
+</head>
+<body class="dark-bg">
+    <div class="dashboard-header">
+        <h1>IoT Anti-Colleague Mixer Dashboard</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+    <div class="mixer-container" id="mixer-root">
+        <!-- All columns will be dynamically rendered by mixer.js -->
+        <div id="mixer-columns"></div>
+    </div>
+</body>
+</html>
