@@ -14,7 +14,7 @@ import os
 from flask import Flask, jsonify, request
 
 # --- Config file path ---
-CONFIG_PATH = "/home/pi/00_APPLICATION/threshold_config.json"
+CONFIG_PATH = "/home/rombo/00_APPLICATION/threshold_config.json"
 
 # --- Defaults (used if JSON missing fields) ---
 DEFAULT_CONFIG = {
@@ -52,7 +52,7 @@ ECHO_FEEDBACK = config["ECHO_FEEDBACK"]
 ECHO_START_VOL = config["ECHO_START_VOL"]
 ECHO_END_VOL = config["ECHO_END_VOL"]
 
-SAMPLE_RATE = 48000
+SAMPLE_RATE = 16000
 CHANNELS = 1
 DEVICE = None
 FRAME_DURATION = 0.5
@@ -170,7 +170,7 @@ def api_threshold():
         return jsonify({"status": "error", "message": "Missing field"}), 400
     else:
         return jsonify({"threshold_dbfs": THRESHOLD_DBFS})
-
+        
 @api_app.route('/echo_params', methods=['GET', 'POST'])
 def api_echo_params():
     global ECHO_DELAY_SEC, ECHO_TAPS, ECHO_FEEDBACK, ECHO_START_VOL, ECHO_END_VOL, config

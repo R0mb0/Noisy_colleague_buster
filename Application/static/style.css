@@ -126,7 +126,9 @@ body.dark-bg {
 .vmeter-bar {
     width: 100%;
     border-radius: 6px;
-    background: #fff9;
+    background: #40d9ff;
+    box-shadow: 0 0 12px #40d9ff99, 0 0 2px #fff;
+    border: 2px solid #fff9;
     transition: height 0.15s;
     position: absolute;
     bottom: 0;

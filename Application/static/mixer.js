@@ -116,6 +116,17 @@ document.addEventListener("DOMContentLoaded", async function() {
             col.lampOffLabel = def.off_label;
         }
         else if (def.type === "slider") {
+            // --- Container for slider and marker, with relative positioning ---
+            const sliderContainer = document.createElement("div");
+            sliderContainer.style.position = "relative";
+            sliderContainer.style.height = "205px";
+            sliderContainer.style.width = "28px";
+            sliderContainer.style.display = "flex";
+            sliderContainer.style.alignItems = "center";
+            sliderContainer.style.justifyContent = "center";
+            sliderContainer.style.marginBottom = "4px";
+
+            // --- Slider ---
             const slider = document.createElement("input");
             slider.type = "range";
             slider.className = "slider-vert";
@@ -127,16 +138,20 @@ document.addEventListener("DOMContentLoaded", async function() {
             let initial = initialValues[def.param];
             if (initial === undefined || initial === null) initial = paramCenters[def.param];
             slider.value = initial;
-
             slider.paramDef = def;
 
-            // --- Add marker for "center" reference value ---
+            // --- Center marker ---
             const marker = document.createElement("div");
             marker.className = "slider-center-marker";
             let centerVal = paramCenters[def.param];
             let percent = (centerVal - def.min) / (def.max - def.min);
             marker.style.top = (100 - percent * 100) + "%";
-            col.appendChild(marker);
+            marker.style.left = "50%";
+            marker.style.transform = "translateX(-50%)";
+            marker.style.position = "absolute";
+            sliderContainer.appendChild(marker);
+
+            sliderContainer.appendChild(slider);
 
             // Value display
             const value = document.createElement("div");
@@ -162,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 });
             });
 
-            col.appendChild(slider);
+            col.appendChild(sliderContainer);
             col.appendChild(value);
             col.slider = slider;
             col.sliderValue = value;
