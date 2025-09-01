@@ -1,6 +1,6 @@
 // Runs after DOMContentLoaded
 document.addEventListener("DOMContentLoaded", async function() {
-    // --- Default "center" values (hardcoded, do not change unless you want to shift the reference) ---
+    // --- Default "center" values ---
     const paramCenters = {
         "THRESHOLD_DBFS": -25.0,
         "LOCKOUT_SEC": 2.0,
@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         "ECHO_TAPS": 3,
         "ECHO_FEEDBACK": 0.5,
         "ECHO_START_VOL": 1.0,
-        "ECHO_END_VOL": 0.3
+        "ECHO_END_VOL": 0.3,
+        "FRAME_DURATION": 1.5
     };
 
     const colDefs = [
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         { label: "ECHO DELAY", type: "slider", param: "ECHO_DELAY_SEC", min: 0, max: 1.0, step: 0.01, format: v => v.toFixed(2) + " s" },
         { label: "ECHO TAPS", type: "slider", param: "ECHO_TAPS", min: 1, max: 8, step: 1, format: v => v },
         { label: "ECHO FEEDBACK", type: "slider", param: "ECHO_FEEDBACK", min: 0, max: 1.0, step: 0.01, format: v => Math.round(v*100) + "%" },
+        { label: "ECHO FRAME", type: "slider", param: "FRAME_DURATION", min: 0.2, max: 3.0, step: 0.05, format: v => v.toFixed(2) + " s" },
         { label: "ECHO VOLUME", type: "timer" },
         { label: "START VOL", type: "slider", param: "ECHO_START_VOL", min: 0, max: 1.5, step: 0.01, format: v => v.toFixed(2) },
         { label: "END VOL", type: "slider", param: "ECHO_END_VOL", min: 0, max: 1.5, step: 0.01, format: v => v.toFixed(2) }
@@ -33,7 +35,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         "ECHO_TAPS": { api: "/api/echo_params", key: "taps" },
         "ECHO_FEEDBACK": { api: "/api/echo_params", key: "feedback" },
         "ECHO_START_VOL": { api: "/api/echo_params", key: "start_vol" },
-        "ECHO_END_VOL": { api: "/api/echo_params", key: "end_vol" }
+        "ECHO_END_VOL": { api: "/api/echo_params", key: "end_vol" },
+        "FRAME_DURATION": { api: "/api/echo_params", key: "frame_duration" }
     };
 
     let current = {}; // Holds latest status
@@ -54,12 +57,14 @@ document.addEventListener("DOMContentLoaded", async function() {
                 initialValues["ECHO_FEEDBACK"] = data.echo_params.feedback;
                 initialValues["ECHO_START_VOL"] = data.echo_params.start_vol;
                 initialValues["ECHO_END_VOL"] = data.echo_params.end_vol;
+                initialValues["FRAME_DURATION"] = data.echo_params.frame_duration;
             }
         }
     } catch (e) {
-        // If cannot fetch, fallback to centers
         initialValues = {...paramCenters};
     }
+
+    const editingSliders = new Set();
 
     function createCol(def, idx) {
         const col = document.createElement("div");
@@ -69,7 +74,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         label.textContent = def.label;
         col.appendChild(label);
 
-        // Column content
         if (def.type === "vmeter") {
             const vmeter = document.createElement("div");
             vmeter.className = "vmeter";
@@ -80,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             bar.style.background = "#ffe06655";
             vmeter.appendChild(bar);
 
-            // Scale
             const scale = document.createElement("div");
             scale.className = "vmeter-scale";
             scale.innerHTML = "<span>0</span><span>-10</span><span>-20</span><span>-30</span><span>-40</span><span>-50</span>";
@@ -88,7 +91,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             col.appendChild(vmeter);
 
-            // dBFS value
             const value = document.createElement("div");
             value.className = "slider-value";
             value.id = "vmeter-value";
@@ -116,7 +118,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             col.lampOffLabel = def.off_label;
         }
         else if (def.type === "slider") {
-            // --- Container for slider and marker, with relative positioning ---
             const sliderContainer = document.createElement("div");
             sliderContainer.style.position = "relative";
             sliderContainer.style.height = "205px";
@@ -126,7 +127,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             sliderContainer.style.justifyContent = "center";
             sliderContainer.style.marginBottom = "4px";
 
-            // --- Slider ---
             const slider = document.createElement("input");
             slider.type = "range";
             slider.className = "slider-vert";
@@ -134,13 +134,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             slider.max = def.max;
             slider.step = def.step;
 
-            // --- Set initial value from backend/status ---
             let initial = initialValues[def.param];
             if (initial === undefined || initial === null) initial = paramCenters[def.param];
             slider.value = initial;
             slider.paramDef = def;
 
-            // --- Center marker ---
             const marker = document.createElement("div");
             marker.className = "slider-center-marker";
             let centerVal = paramCenters[def.param];
@@ -153,7 +151,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             sliderContainer.appendChild(slider);
 
-            // Value display
             const value = document.createElement("div");
             value.className = "slider-value";
             value.id = `sliderval-${def.param}`;
@@ -163,8 +160,17 @@ document.addEventListener("DOMContentLoaded", async function() {
                 value.textContent = def.format(Number(slider.value));
             });
 
+            slider.addEventListener("pointerdown", function(e) {
+                editingSliders.add(slider);
+            });
+            slider.addEventListener("pointerup", function(e) {
+                editingSliders.delete(slider);
+            });
+            slider.addEventListener("blur", function(e) {
+                editingSliders.delete(slider);
+            });
+
             slider.addEventListener("change", function(e) {
-                // Send updated value to backend
                 const param = paramMap[def.param];
                 const val = Number(slider.value);
                 value.textContent = def.format(val);
@@ -201,7 +207,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         return col;
     }
 
-    // --- Render all columns ---
     const mixer = document.getElementById("mixer-columns");
     const colObjs = [];
     for (let i = 0; i < colDefs.length; i++) {
@@ -210,7 +215,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         colObjs.push(col);
     }
 
-    // --- Poll status and update UI ---
     async function pollStatus() {
         try {
             const resp = await fetch("/api/status");
@@ -225,35 +229,44 @@ document.addEventListener("DOMContentLoaded", async function() {
                 colObjs[0].vmeterValue.textContent = dbfs === -Infinity ? "-∞ dBFS" : dbfs.toFixed(1) + " dBFS";
             }
 
-            // Update sliders
+            // Update sliders and lamps
             for (let c of colObjs) {
                 if (c.slider) {
-                    let p = c.slider.paramDef.param;
-                    let v = null;
-                    if (p === "THRESHOLD_DBFS") v = data.threshold_dbfs;
-                    else if (p === "LOCKOUT_SEC") v = data.lockout_sec;
-                    else if (data.echo_params && p.startsWith("ECHO_")) {
-                        if (p === "ECHO_DELAY_SEC") v = data.echo_params.delay_sec;
-                        if (p === "ECHO_TAPS") v = data.echo_params.taps;
-                        if (p === "ECHO_FEEDBACK") v = data.echo_params.feedback;
-                        if (p === "ECHO_START_VOL") v = data.echo_params.start_vol;
-                        if (p === "ECHO_END_VOL") v = data.echo_params.end_vol;
-                    }
-                    if (v !== null && v !== undefined && c.slider.value != v) {
-                        c.slider.value = v;
-                        c.sliderValue.textContent = c.slider.paramDef.format(v);
+                    if (!editingSliders.has(c.slider)) {
+                        let p = c.slider.paramDef.param;
+                        let v = null;
+                        if (p === "THRESHOLD_DBFS") v = data.threshold_dbfs;
+                        else if (p === "LOCKOUT_SEC") v = data.lockout_sec;
+                        else if (data.echo_params && p.startsWith("ECHO_")) {
+                            if (p === "ECHO_DELAY_SEC") v = data.echo_params.delay_sec;
+                            if (p === "ECHO_TAPS") v = data.echo_params.taps;
+                            if (p === "ECHO_FEEDBACK") v = data.echo_params.feedback;
+                            if (p === "ECHO_START_VOL") v = data.echo_params.start_vol;
+                            if (p === "ECHO_END_VOL") v = data.echo_params.end_vol;
+                        }
+                        if (p === "FRAME_DURATION" && data.echo_params) {
+                            v = data.echo_params.frame_duration;
+                        }
+                        if (v !== null && v !== undefined && c.slider.value != v) {
+                            c.slider.value = v;
+                            c.sliderValue.textContent = c.slider.paramDef.format(v);
+                        }
                     }
                 }
                 if (c.lamp) {
                     let state = false;
                     if (c.lampState === "mic_enabled") state = !!data.mic_enabled;
-                    if (c.lampState === "echo_active") state = !!(data.echo_params && (data.echo_params.active || data.echo_params.last_triggered));
+                    if (c.lampState === "echo_active") {
+                        // Use data from backend: echo_params.active
+                        state = !!(data.echo_params && data.echo_params.active);
+                    }
                     c.lamp.className = "lamp " + (state ? "green" : "red");
                     c.lampLabel.textContent = state ? c.lampOnLabel : c.lampOffLabel;
                 }
                 if (c.timerValue && data.echo_params) {
-                    let start = data.echo_params.start_vol, end = data.echo_params.end_vol;
-                    c.timerValue.textContent = (data.echo_params.active ? start : end).toFixed(2);
+                    // Animate echo volume: show live value if echo active, else end value
+                    let val = data.echo_params.active ? data.echo_params.level : data.echo_params.end_vol;
+                    c.timerValue.textContent = Number(val).toFixed(2);
                 }
             }
         } catch (e) {
@@ -267,6 +280,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }
 
-    setInterval(pollStatus, 600); // Poll every 0.6s
+    setInterval(pollStatus, 200); // Poll every 0.2s for better echo animation
     pollStatus();
 });

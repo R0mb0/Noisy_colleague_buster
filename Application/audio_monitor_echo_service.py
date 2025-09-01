@@ -1,8 +1,9 @@
 """
-Audio Monitor & Echo Service with JSON Config
+Audio Monitor & Echo Service with Robust State Handling
 
 Reads configuration from threshold_config.json at startup.
 API modifications persist to the same file.
+Adds robust state management: mic_enabled and echo_active always reset even in case of errors.
 """
 
 import sounddevice as sd
@@ -24,7 +25,8 @@ DEFAULT_CONFIG = {
     "ECHO_TAPS": 3,
     "ECHO_FEEDBACK": 0.5,
     "ECHO_START_VOL": 1.0,
-    "ECHO_END_VOL": 0.3
+    "ECHO_END_VOL": 0.3,
+    "FRAME_DURATION": 1.5
 }
 
 # --- Load/save config ---
@@ -51,11 +53,11 @@ ECHO_TAPS = config["ECHO_TAPS"]
 ECHO_FEEDBACK = config["ECHO_FEEDBACK"]
 ECHO_START_VOL = config["ECHO_START_VOL"]
 ECHO_END_VOL = config["ECHO_END_VOL"]
+FRAME_DURATION = config.get("FRAME_DURATION", 1.5)
 
 SAMPLE_RATE = 16000
 CHANNELS = 1
 DEVICE = None
-FRAME_DURATION = 0.5
 
 current_volume = {
     "rms": 0.0,
@@ -63,7 +65,12 @@ current_volume = {
     "updated": time.time()
 }
 lock = threading.Lock()
+
 mic_enabled = True
+echo_active = False
+echo_level = 0.0
+echo_level_lock = threading.Lock()
+
 api_app = Flask(__name__)
 
 def rms_to_dbfs(rms, ref=32768.0):
@@ -94,15 +101,15 @@ def create_echo_buffer(audio, taps, delay_sec, feedback, start_vol, end_vol):
         if feedback > 0 and i > 0:
             echo += out[start-delay_samples:end-delay_samples] * feedback
         out[start:end] += echo
-    return out
+    return out, envelope
 
 def monitor_thread():
     global current_volume, mic_enabled
     while True:
         if mic_enabled:
             try:
-                audio = sd.rec(int(FRAME_DURATION * SAMPLE_RATE), 
-                               samplerate=SAMPLE_RATE, 
+                audio = sd.rec(int(FRAME_DURATION * SAMPLE_RATE),
+                               samplerate=SAMPLE_RATE,
                                channels=CHANNELS, dtype='int16', device=DEVICE)
                 sd.wait()
                 arr = audio.astype(np.float32)
@@ -124,27 +131,47 @@ def monitor_thread():
             time.sleep(0.05)
 
 def trigger_echo(audio_frame):
-    global mic_enabled
-    echo_audio = create_echo_buffer(
-        audio_frame, 
-        ECHO_TAPS, 
-        ECHO_DELAY_SEC, 
-        ECHO_FEEDBACK, 
-        ECHO_START_VOL, 
+    global mic_enabled, echo_active, echo_level
+    echo_audio, envelope = create_echo_buffer(
+        audio_frame,
+        ECHO_TAPS,
+        ECHO_DELAY_SEC,
+        ECHO_FEEDBACK,
+        ECHO_START_VOL,
         ECHO_END_VOL
     )
     echo_audio = np.clip(echo_audio, -32768, 32767).astype(np.int16)
     mic_enabled = False
-    try:
-        log("Starting echo playback (mic lockout).")
-        sd.play(echo_audio, samplerate=SAMPLE_RATE, device=DEVICE)
-        sd.wait()
-        log("Echo playback finished.")
-    except Exception as e:
-        log(f"Echo playback error: {e}")
-    time.sleep(LOCKOUT_SEC)
-    mic_enabled = True
-    log("Mic re-enabled after lockout.")
+    echo_active = True
+
+    def playback_with_animation():
+        global echo_level, echo_active, mic_enabled
+        try:
+            sd.play(echo_audio, samplerate=SAMPLE_RATE, device=DEVICE)
+            # Animate echo_level for UI: step through each tap
+            for i, tap_env in enumerate(envelope):
+                with echo_level_lock:
+                    echo_level = float(tap_env)
+                if i == 0:
+                    time.sleep(FRAME_DURATION)
+                else:
+                    time.sleep(ECHO_DELAY_SEC)
+            with echo_level_lock:
+                echo_level = float(ECHO_END_VOL)
+            # Added timeout to avoid infinite blocking
+            sd.wait(timeout=int(FRAME_DURATION + ECHO_DELAY_SEC * len(envelope) + 2))
+            log("Echo playback finished.")
+        except Exception as e:
+            log(f"Echo playback error: {e}")
+        finally:
+            echo_active = False
+            mic_enabled = True
+            log("Mic re-enabled after lockout (finally block).")
+
+    # Run echo playback and animation in a separate thread
+    thread = threading.Thread(target=playback_with_animation)
+    thread.start()
+    # Lockout delay is now handled in the finally block, not here
 
 # --- REST API (Flask) ---
 @api_app.route('/volume', methods=['GET'])
@@ -170,28 +197,31 @@ def api_threshold():
         return jsonify({"status": "error", "message": "Missing field"}), 400
     else:
         return jsonify({"threshold_dbfs": THRESHOLD_DBFS})
-        
+
 @api_app.route('/echo_params', methods=['GET', 'POST'])
 def api_echo_params():
-    global ECHO_DELAY_SEC, ECHO_TAPS, ECHO_FEEDBACK, ECHO_START_VOL, ECHO_END_VOL, config
+    global ECHO_DELAY_SEC, ECHO_TAPS, ECHO_FEEDBACK, ECHO_START_VOL, ECHO_END_VOL, FRAME_DURATION, config
     if request.method == 'POST':
         data = request.get_json(force=True)
         try:
-            if "delay_sec" in data: 
+            if "delay_sec" in data:
                 ECHO_DELAY_SEC = float(data["delay_sec"])
                 config["ECHO_DELAY_SEC"] = ECHO_DELAY_SEC
-            if "taps" in data: 
+            if "taps" in data:
                 ECHO_TAPS = int(data["taps"])
                 config["ECHO_TAPS"] = ECHO_TAPS
-            if "feedback" in data: 
+            if "feedback" in data:
                 ECHO_FEEDBACK = float(data["feedback"])
                 config["ECHO_FEEDBACK"] = ECHO_FEEDBACK
-            if "start_vol" in data: 
+            if "start_vol" in data:
                 ECHO_START_VOL = float(data["start_vol"])
                 config["ECHO_START_VOL"] = ECHO_START_VOL
-            if "end_vol" in data: 
+            if "end_vol" in data:
                 ECHO_END_VOL = float(data["end_vol"])
                 config["ECHO_END_VOL"] = ECHO_END_VOL
+            if "frame_duration" in data:
+                FRAME_DURATION = float(data["frame_duration"])
+                config["FRAME_DURATION"] = FRAME_DURATION
             save_config(config)
             log(f"Echo params updated via API.")
             return jsonify({
@@ -200,7 +230,8 @@ def api_echo_params():
                 "taps": ECHO_TAPS,
                 "feedback": ECHO_FEEDBACK,
                 "start_vol": ECHO_START_VOL,
-                "end_vol": ECHO_END_VOL
+                "end_vol": ECHO_END_VOL,
+                "frame_duration": FRAME_DURATION
             })
         except Exception:
             return jsonify({"status": "error", "message": "Invalid value"}), 400
@@ -210,7 +241,8 @@ def api_echo_params():
             "taps": ECHO_TAPS,
             "feedback": ECHO_FEEDBACK,
             "start_vol": ECHO_START_VOL,
-            "end_vol": ECHO_END_VOL
+            "end_vol": ECHO_END_VOL,
+            "frame_duration": FRAME_DURATION
         })
 
 @api_app.route('/lockout', methods=['GET', 'POST'])
@@ -237,8 +269,8 @@ def api_start_echo():
     if not mic_enabled:
         return jsonify({"status": "error", "message": "Mic is locked out"}), 403
     try:
-        audio = sd.rec(int(FRAME_DURATION * SAMPLE_RATE), 
-                       samplerate=SAMPLE_RATE, 
+        audio = sd.rec(int(FRAME_DURATION * SAMPLE_RATE),
+                       samplerate=SAMPLE_RATE,
                        channels=CHANNELS, dtype='int16', device=DEVICE)
         sd.wait()
         arr = audio.astype(np.float32)
@@ -252,6 +284,8 @@ def api_start_echo():
 def api_status():
     with lock:
         v = dict(current_volume)
+    with echo_level_lock:
+        level = float(echo_level)
     status = {
         "mic_enabled": mic_enabled,
         "last_rms": v["rms"],
@@ -263,7 +297,10 @@ def api_status():
             "taps": ECHO_TAPS,
             "feedback": ECHO_FEEDBACK,
             "start_vol": ECHO_START_VOL,
-            "end_vol": ECHO_END_VOL
+            "end_vol": ECHO_END_VOL,
+            "frame_duration": FRAME_DURATION,
+            "active": echo_active,
+            "level": level
         },
         "lockout_sec": LOCKOUT_SEC
     }
