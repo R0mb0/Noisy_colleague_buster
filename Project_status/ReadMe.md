@@ -38,9 +38,9 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 4. Gestione Soglia di Rumore
 
-- [ ] **Definire una soglia di intervento modificabile (da file di configurazione)**
-- [ ] **Implementare la logica di confronto tra volume rilevato e soglia**
-- [ ] **Permettere la modifica della soglia senza riavviare il sistema**
+- [X] **Definire una soglia di intervento modificabile (da file di configurazione)**
+- [X] **Implementare la logica di confronto tra volume rilevato e soglia**
+- [X] **Permettere la modifica della soglia senza riavviare il sistema**
 
 ---
 
@@ -92,7 +92,7 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 10. Estensioni Future (Facoltative)
 
-- [ ] **Interfaccia Web locale su Raspberry Pi per gestione/configurazione**
+- [X] **Interfaccia Web locale su Raspberry Pi per gestione/configurazione**
 - [ ] **Aggiunta di altre metriche (temperatura, presenza, ecc.)**
 - [ ] **Supporto multi-device e aggregazione dati da più stanze**
 - [ ] **Integrazione con altri servizi cloud o bot Telegram per notifiche**
