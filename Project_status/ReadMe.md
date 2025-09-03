@@ -46,47 +46,47 @@ Ogni punto corrisponde a una fase concreta dello sviluppo, dalla configurazione 
 
 ## 5. Attivazione Eco/Disturbo
 
-- [ ] **Implementare funzione di eco/disturbo audio**
+- [X] **Implementare funzione di eco/disturbo audio**
   - Semplice delay audio (loopback con ritardo)
   - Alternativamente, riproduzione di un suono pre-registrato
-- [ ] **Testare la riproduzione audio sull’altoparlante**
-- [ ] **Attivare l’effetto solo quando il volume supera la soglia**
+- [X] **Testare la riproduzione audio sull’altoparlante**
+- [X] **Attivare l’effetto solo quando il volume supera la soglia**
 
 ---
 
 ## 6. Registrazione degli Eventi
 
-- [ ] **Salvare timestamp e livello rumore ogni volta che si attiva il disturbo**
-- [ ] **Archiviare gli eventi in locale (file CSV o database leggero)**
-- [ ] **Gestire rotazione/backup dei dati locali**
+- [X] **Salvare timestamp e livello rumore ogni volta che si attiva il disturbo**
+- [X] **Archiviare gli eventi in locale (file CSV o database leggero)**
+- [X] **Gestire rotazione/backup dei dati locali**
 
 ---
 
 ## 7. Invio Dati a ThingSpeak
 
 - [X] **Registrare un account ThingSpeak e creare un canale**
-- [ ] **Configurare API KEY e parametri di accesso**
-- [ ] **Implementare invio dati (timestamp, livello rumore) via HTTP REST API**
-- [ ] **Gestire errori di invio e ritentativi**
+- [X] **Configurare API KEY e parametri di accesso**
+- [X] **Implementare invio dati (timestamp, livello rumore) via HTTP REST API**
+- [X] **Gestire errori di invio e ritentativi**
 
 ---
 
 ## 8. Visualizzazione e Analisi Cloud
 
-- [ ] **Verificare la ricezione e visualizzazione degli eventi su ThingSpeak**
-- [ ] **Configurare dashboard e grafici per analisi temporale e statistica**
-- [ ] **Testare la visualizzazione dei dati da vari dispositivi/remotamente**
-- [ ] **Documentare il processo di visualizzazione**
+- [X] **Verificare la ricezione e visualizzazione degli eventi su ThingSpeak**
+- [X] **Configurare dashboard e grafici per analisi temporale e statistica**
+- [X] **Testare la visualizzazione dei dati da vari dispositivi/remotamente**
+- [X] **Documentare il processo di visualizzazione**
 
 ---
 
 ## 9. Ottimizzazione e Manutenzione
 
-- [ ] **Documentare il codice e scrivere README**
-- [ ] **Automatizzare avvio script Python all’accensione del Raspberry Pi**
-- [ ] **Gestire aggiornamenti software e sicurezza**
-- [ ] **Prevedere notifiche/alert (opzionale)**
-- [ ] **Testare e validare tutto il sistema in condizioni reali**
+- [X] **Documentare il codice e scrivere README**
+- [X] **Automatizzare avvio script Python all’accensione del Raspberry Pi**
+- [X] **Gestire aggiornamenti software e sicurezza**
+- [X] **Prevedere notifiche/alert (opzionale)**
+- [X] **Testare e validare tutto il sistema in condizioni reali**
 
 ---
 
