@@ -1,9 +1,10 @@
 """
-Audio Monitor & Echo Service with Robust State Handling
+Audio Monitor & Echo Service with ThingSpeak and CSV Logging
 
-Reads configuration from threshold_config.json at startup.
-API modifications persist to the same file.
-Adds robust state management: mic_enabled and echo_active always reset even in case of errors.
+- Reads configuration from threshold_config.json at startup.
+- API modifications persist to the same file.
+- On automatic echo trigger (threshold exceeded), logs event to local CSV and sends data to ThingSpeak (fields: noise level, timestamp ISO8601).
+- Robust: state is always reset; retry on ThingSpeak failure.
 """
 
 import sounddevice as sd
@@ -12,10 +13,14 @@ import threading
 import time
 import json
 import os
+import requests
+from datetime import datetime, timezone
 from flask import Flask, jsonify, request
 
-# --- Config file path ---
+# --- Config file paths ---
 CONFIG_PATH = "/home/rombo/00_APPLICATION/threshold_config.json"
+THINGSPEAK_CONFIG_PATH = "/home/rombo/00_APPLICATION/config.json"  # Path for ThingSpeak API keys
+CSV_LOG_PATH = "/home/rombo/00_APPLICATION/event_log.csv"
 
 # --- Defaults (used if JSON missing fields) ---
 DEFAULT_CONFIG = {
@@ -43,6 +48,56 @@ def load_config():
 def save_config(cfg):
     with open(CONFIG_PATH, "w") as f:
         json.dump(cfg, f, indent=2)
+
+# --- Load ThingSpeak config (channel ID, API key) ---
+def load_thingspeak_config():
+    if not os.path.exists(THINGSPEAK_CONFIG_PATH):
+        raise RuntimeError("ThingSpeak config.json missing at {}".format(THINGSPEAK_CONFIG_PATH))
+    with open(THINGSPEAK_CONFIG_PATH) as f:
+        data = json.load(f)
+    return {
+        "channel_id": data["THINGSPEAK_CHANNEL_ID"],
+        "write_api_key": data["THINGSPEAK_WRITE_API_KEY"],
+    }
+
+# --- Save event to local CSV ---
+def log_event_csv(ts_iso, dbfs):
+    header = "timestamp_iso,noise_dbfs\n"
+    newfile = not os.path.exists(CSV_LOG_PATH)
+    with open(CSV_LOG_PATH, "a") as f:
+        if newfile:
+            f.write(header)
+        f.write(f"{ts_iso},{dbfs:.2f}\n")
+
+# --- Send event to ThingSpeak with retry ---
+def log_event_thingspeak(dbfs, ts_iso, max_retries=3):
+    try:
+        cfg = load_thingspeak_config()
+    except Exception as e:
+        log(f"[ThingSpeak] Config load error: {e}")
+        return False
+    payload = {
+        "api_key": cfg["write_api_key"],
+        "field1": dbfs,
+        "field2": ts_iso,
+    }
+    url = f"https://api.thingspeak.com/update.json"
+    last_err = None
+    for attempt in range(1, max_retries+1):
+        try:
+            r = requests.post(url, data=payload, timeout=6)
+            if r.status_code == 200 and r.json().get("created_at"):
+                log(f"Event sent to ThingSpeak! dbfs={dbfs:.1f} at {ts_iso}")
+                return True
+            else:
+                last_err = f"HTTP {r.status_code} {r.text}"
+                log(f"[ThingSpeak] Failed attempt {attempt}: {last_err}")
+        except Exception as e:
+            last_err = str(e)
+            log(f"[ThingSpeak] Exception attempt {attempt}: {last_err}")
+        time.sleep(2)
+    log(f"[ThingSpeak] All retries failed. Last error: {last_err}")
+    return False
 
 # --- Global (dynamic) state from config ---
 config = load_config()
@@ -84,7 +139,7 @@ def get_echo_envelope(taps, start_vol, end_vol):
     return np.linspace(start_vol, end_vol, taps)
 
 def log(msg):
-    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
+    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}", flush=True)
 
 def create_echo_buffer(audio, taps, delay_sec, feedback, start_vol, end_vol):
     n_samples = len(audio)
@@ -123,14 +178,19 @@ def monitor_thread():
                     }
                 if dbfs > THRESHOLD_DBFS:
                     log(f"Threshold exceeded! dbfs={dbfs:.1f}. Triggering echo...")
-                    trigger_echo(arr.flatten())
+                    # Only the automatic trigger will log event to cloud/CSV
+                    trigger_echo(arr.flatten(), trigger_type="auto", dbfs=dbfs)
             except Exception as e:
                 log(f"Audio monitor error: {e}")
                 time.sleep(1)
         else:
             time.sleep(0.05)
 
-def trigger_echo(audio_frame):
+def trigger_echo(audio_frame, trigger_type="auto", dbfs=None):
+    """
+    trigger_type: 'auto' (threshold exceeded) or 'manual' (API trigger)
+    dbfs: required for logging (only for auto)
+    """
     global mic_enabled, echo_active, echo_level
     echo_audio, envelope = create_echo_buffer(
         audio_frame,
@@ -144,11 +204,23 @@ def trigger_echo(audio_frame):
     mic_enabled = False
     echo_active = True
 
-    def playback_with_animation():
+    def playback_with_animation_and_log():
         global echo_level, echo_active, mic_enabled
+        # --- Log only for automatic triggers ---
+        if trigger_type == "auto":
+            ts_iso = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            try:
+                log_event_csv(ts_iso, dbfs)
+            except Exception as e:
+                log(f"[CSV] Logging error: {e}")
+            try:
+                log_event_thingspeak(dbfs, ts_iso)
+            except Exception as e:
+                log(f"[ThingSpeak] Unexpected error: {e}")
+        # --- Playback and UI state ---
         try:
             sd.play(echo_audio, samplerate=SAMPLE_RATE, device=DEVICE)
-            # Animate echo_level for UI: step through each tap
+            # Animate echo_level: step for each tap
             for i, tap_env in enumerate(envelope):
                 with echo_level_lock:
                     echo_level = float(tap_env)
@@ -158,8 +230,8 @@ def trigger_echo(audio_frame):
                     time.sleep(ECHO_DELAY_SEC)
             with echo_level_lock:
                 echo_level = float(ECHO_END_VOL)
-            # Added timeout to avoid infinite blocking
-            sd.wait(timeout=int(FRAME_DURATION + ECHO_DELAY_SEC * len(envelope) + 2))
+            #sd.wait(timeout=int(FRAME_DURATION + ECHO_DELAY_SEC * len(envelope) + 2))
+            sd.wait()
             log("Echo playback finished.")
         except Exception as e:
             log(f"Echo playback error: {e}")
@@ -168,10 +240,8 @@ def trigger_echo(audio_frame):
             mic_enabled = True
             log("Mic re-enabled after lockout (finally block).")
 
-    # Run echo playback and animation in a separate thread
-    thread = threading.Thread(target=playback_with_animation)
+    thread = threading.Thread(target=playback_with_animation_and_log)
     thread.start()
-    # Lockout delay is now handled in the finally block, not here
 
 # --- REST API (Flask) ---
 @api_app.route('/volume', methods=['GET'])
@@ -274,7 +344,8 @@ def api_start_echo():
                        channels=CHANNELS, dtype='int16', device=DEVICE)
         sd.wait()
         arr = audio.astype(np.float32)
-        threading.Thread(target=trigger_echo, args=(arr.flatten(),), daemon=True).start()
+        # Manual trigger: do not log to ThingSpeak/CSV
+        threading.Thread(target=trigger_echo, args=(arr.flatten(), "manual", None), daemon=True).start()
         log("Manual echo triggered via API.")
         return jsonify({"status": "ok", "message": "Echo triggered"})
     except Exception as e:
@@ -307,7 +378,7 @@ def api_status():
     return jsonify(status)
 
 if __name__ == '__main__':
-    log("Starting Audio Monitor + Echo + API Service...")
+    log("Starting Audio Monitor + Echo + ThingSpeak+CSV Logging API Service...")
     t = threading.Thread(target=monitor_thread, daemon=True)
     t.start()
     api_app.run(host='127.0.0.1', port=8080, threaded=True)
