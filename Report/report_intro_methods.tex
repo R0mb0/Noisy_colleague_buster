@@ -1,0 +1,64 @@
+% --- INTRODUZIONE E METODI PRONTI PER IL TEMPLATE ---
+
+\section*{Introduzione}
+
+Il crescente utilizzo di dispositivi IoT per la gestione degli ambienti di lavoro ha aperto nuove prospettive per il benessere e la produttività in ufficio. In particolare, il controllo del rumore rappresenta una sfida concreta in open space e ambienti condivisi, dove episodi di disturbo possono influenzare negativamente la concentrazione dei lavoratori. Questo progetto propone la realizzazione di un sistema IoT denominato "Dispositivo Anti Collega Fastidioso", basato su Raspberry Pi e microfono USB, capace di monitorare il livello di rumore ambientale e di intervenire in modo automatico quando la soglia impostata viene superata.
+
+Il sistema si distingue per la capacità di attivare, tramite un altoparlante, un effetto eco o disturbo audio ogni qualvolta il rumore supera il "livello di guardia", fornendo un feedback acustico diretto a chi sta causando il disturbo. Gli eventi vengono registrati e inviati a una dashboard cloud (ThingSpeak) per la visualizzazione e l’analisi statistica degli episodi di superamento soglia. La soluzione, completamente sviluppata in Python, integra una interfaccia web per la configurazione in tempo reale dei parametri di intervento e la visualizzazione dei dati.
+
+Questa relazione descrive l’architettura hardware e software, le scelte progettuali adottate, la metodologia di sviluppo e i risultati ottenuti. Il lavoro si inserisce nel contesto della programmazione IoT, come approfondito nel testo di riferimento~\cite{milenkovic2020internet}, e mira a fornire un esempio concreto di applicazione di tecniche di monitoraggio audio, automazione e cloud integration in ambienti reali.
+
+%------------------------------------------------
+
+\section{Methods}
+
+\subsection{Architettura del Sistema}
+
+Il dispositivo si basa su Raspberry Pi 3B+ equipaggiato con microfono USB e altoparlante. Il sistema operativo utilizzato è Raspberry Pi OS (Legacy) with Desktop, scelto per la compatibilità con le librerie audio Python (sounddevice, numpy) e la semplicità di configurazione della rete WiFi.
+
+\begin{figure*}[ht]\centering
+	\includegraphics[width=\linewidth]{system_architecture}
+	\caption{Schema architetturale del sistema IoT Anti Collega Fastidioso.}
+	\label{fig:architettura}
+\end{figure*}
+
+La componente software principale è uno script Python che:
+\begin{itemize}
+    \item monitora in continuo il livello di volume ambientale tramite analisi RMS (Root Mean Square) e calcolo del dBFS;
+    \item confronta il valore rilevato con una soglia impostabile;
+    \item attiva l’effetto eco/disturbo tramite riproduzione audio quando la soglia viene superata;
+    \item registra l’evento (timestamp, livello rumore) su file CSV e lo invia via API HTTP a ThingSpeak;
+    \item espone una API REST locale per la configurazione dei parametri (soglia, comportamento eco, lockout, ecc.) e per la visualizzazione dello stato in tempo reale.
+\end{itemize}
+
+\subsection{Configurazione e Monitoraggio}
+
+La soglia di intervento, la durata del lockout del microfono dopo l’eco, e i parametri dell’effetto eco (delay, numero tap, feedback, volume iniziale/finale) sono configurabili tramite una interfaccia web sviluppata con Flask. La webapp comunica con il backend tramite chiamate REST e consente di visualizzare graficamente il livello di rumore, lo stato del sistema e gli ultimi eventi.
+
+Il monitoraggio audio utilizza il modulo \texttt{sounddevice} per acquisizione e playback. Per evitare loop e feedback acustici, la lettura dal microfono viene temporaneamente disabilitata durante la riproduzione dell’eco, secondo la logica di lockout illustrata in Figura~\ref{fig:architettura}. Tutti i parametri vengono salvati e caricati da file JSON, garantendo la persistenza delle configurazioni tra i riavvii.
+
+\subsection{Registrazione degli Eventi e Integrazione Cloud}
+
+Ogni evento di superamento soglia viene salvato localmente su file CSV e inviato alla piattaforma ThingSpeak tramite API HTTP POST, utilizzando i parametri di autenticazione (Channel ID, Write API Key) caricati da file di configurazione separato e mai pubblicato sul repository. ThingSpeak aggrega i dati e li presenta su dashboard e grafici personalizzati, permettendo l’analisi temporale degli episodi di disturbo.
+
+La comunicazione tra Raspberry Pi e ThingSpeak è gestita con meccanismi di ritentativo e logging di eventuali errori, secondo le best practice per la robustezza dei sistemi IoT.
+
+\subsection{API REST e Sicurezza}
+
+L’interfaccia REST locale espone endpoint per:
+\begin{enumerate}[noitemsep]
+    \item Lettura del volume attuale (/volume)
+    \item Impostazione e lettura della soglia (/threshold)
+    \item Configurazione dei parametri eco (/echo\_params)
+    \item Gestione lockout (/lockout)
+    \item Stato generale del sistema (/status)
+    \item Attivazione manuale dell’eco (/start\_echo)
+\end{enumerate}
+
+L’accesso alla dashboard web è protetto da password e sessione utente. La sicurezza dei dati cloud è garantita dalla segregazione delle chiavi ThingSpeak e dalla gestione sicura dei file di configurazione.
+
+\subsection{Gestione Hardware e Avvio Automatico}
+
+Il sistema viene avviato automaticamente tramite un servizio systemd che esegue lo script Python all’accensione del Raspberry Pi. La configurazione hardware è documentata e validata tramite script di rilevamento microfono, per garantire la compatibilità con dispositivi USB standard (PS3 Eye Camera, microfono mono ecc.).
+
+%------------------------------------------------
