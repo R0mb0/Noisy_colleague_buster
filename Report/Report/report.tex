@@ -440,9 +440,58 @@ Per quanto riguarda gli sviluppi futuri, il progetto può essere ulteriormente o
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
 
-\phantomsection
-\bibliographystyle{unsrt}
-\bibliography{sample.bib}
+%\phantomsection
+%\bibliographystyle{unsrt}
+%\bibliography{sample.bib}
+
+\section{Risorse}
+
+Tutti i file sorgente e la documentazione del progetto sono disponibili nel repository GitHub (\url{https://github.com/tuo-username/tuo-repo}).  
+Qui di seguito viene fornita una breve panoramica e descrizione di ciascun file presente nel progetto:
+
+\begin{itemize}
+	\item \textbf{Application/audio\_monitor\_echo\_service.py}:  
+	Script principale che esegue il monitoraggio continuo del livello di rumore tramite microfono USB su Raspberry Pi. Attiva l'effetto eco quando il volume supera la soglia impostata, gestisce il lockout del microfono e i parametri dell'effetto eco. Espone una REST API per la configurazione remota e registra gli eventi su ThingSpeak e in locale (CSV).
+	
+	\item \textbf{Application/webapp.py}:  
+	Web application Flask che fornisce la dashboard di controllo in tempo reale. Permette la visualizzazione dello stato del sistema, la modifica dei parametri (soglia, eco, lockout) e la gestione dell'autenticazione. Funziona da frontend e proxy verso la REST API del backend audio.
+	
+	\item \textbf{Application/static/mixer.js}:  
+	Script JavaScript che gestisce l'interfaccia utente della dashboard web. Aggiorna in tempo reale i controlli, visualizza il livello di rumore, lo stato del microfono e dell'eco, e invia le modifiche dei parametri alla REST API.
+	
+	\item \textbf{Application/static/style.css}:  
+	Foglio di stile CSS utilizzato dalla dashboard web per una visualizzazione moderna e responsive. Gestisce l'aspetto dei controlli, slider, lampade di stato, timer e layout generale.
+	
+	\item \textbf{Application/templates/login.html} \& \textbf{templates/dashboard.html}:  
+	File HTML template per Flask. \texttt{login.html} mostra il form di autenticazione, \texttt{dashboard.html} visualizza la dashboard con tutti i controlli e indicatori del sistema.
+	
+	\item \textbf{Application/threshold\_config.json}:  
+	File di configurazione contenente i parametri runtime del sistema: soglia di trigger, lockout del microfono, parametri eco (delay, tap, feedback, volume iniziale/finale, durata frame). Modificabile tramite la dashboard o direttamente.
+	
+	\item \textbf{Application/config.json}: %-- 
+	File di configurazione contenente le API Key e l'ID del canale ThingSpeak. Utilizzato dal backend Python per inviare i dati al cloud. Da mantenere privato (non va pubblicato su repository pubblici).
+	
+	\item \textbf{Application/event\_log.csv}: %-- 
+	File di log locale dove vengono salvati gli eventi di attivazione dell'eco: timestamp ISO8601 e livello di rumore (dBFS). Utile per analisi storiche e backup dei dati.	
+	
+	
+	\item \textbf{Application/audio\_monitor\_service.py} \& \textbf{Application/start\_audio\_monitor.sh}:  
+	File di servizio systemd e script di avvio che permettono di eseguire il backend Python come servizio automatico all'accensione del Raspberry Pi.	
+	
+	
+	\item \textbf{Application/password.json}:  %---
+	File di configurazione che contiene la password per l’accesso alla dashboard di controllo. Da mantenere privato.
+	
+	\item \textbf{Report/Report/report.tex}:  
+	Il documento LaTeX principale del progetto, contenente la relazione tecnica, l'analisi dei risultati, le figure, i grafici e la descrizione dettagliata dell'implementazione.
+	
+	\item \textbf{Report/Report/sample.bib}:  
+	File BibTeX di esempio per la bibliografia del report LaTeX (se necessario).
+	
+\end{itemize}
+
+Tutti i file sono documentati e commentati nel codice e nella repository GitHub.  
+Per domande, richieste di estensione o segnalazione bug, consultare il README o aprire una issue direttamente sul repository.
 
 %----------------------------------------------------------------------------------------
 
