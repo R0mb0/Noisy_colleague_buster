@@ -1,0 +1,9 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\beamer@sectionintoc {1}{Il bisogno reale}{4}{0}{1}
+\beamer@sectionintoc {2}{L'hardware}{5}{0}{2}
+\beamer@sectionintoc {3}{Il software}{6}{0}{3}
+\beamer@sectionintoc {4}{Sperimentazione sul campo}{7}{0}{4}
+\beamer@sectionintoc {5}{Analisi dei dati}{8}{0}{5}
+\beamer@sectionintoc {6}{Valutazioni}{9}{0}{6}
+\beamer@sectionintoc {7}{Conclusioni}{10}{0}{7}
