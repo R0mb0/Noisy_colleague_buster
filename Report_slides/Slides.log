@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.6.9)  15 SEP 2025 21:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.6.9)  15 SEP 2025 21:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1368,10 +1368,10 @@ Overfull \hbox (12.06964pt too wide) in paragraph at lines 212--212
  []|[][][][] 
  []
 
-File: Images/trigger_volume_vs_time.png Graphic file (type png)
-<use Images/trigger_volume_vs_time.png>
-Package pdftex.def Info: Images/trigger_volume_vs_time.png  used on input line 
-212.
+File: Images/trigger_count_per_day.png Graphic file (type png)
+<use Images/trigger_count_per_day.png>
+Package pdftex.def Info: Images/trigger_count_per_day.png  used on input line 2
+12.
 (pdftex.def)             Requested size: 216.81166pt x 86.72466pt.
 
 Overfull \hbox (12.06964pt too wide) in paragraph at lines 212--212
@@ -1380,7 +1380,8 @@ Overfull \hbox (12.06964pt too wide) in paragraph at lines 212--212
 
 [8.8
 
- <./Images/trigger_volume_vs_time.png>] [9.9
+ <./Images/trigger_volume_vs_time.png> <./Images/trigger_count_per_day.png>] [9
+.9
 
 ] [10.10
 
@@ -1413,10 +1414,10 @@ Package rerunfilecheck Info: File `Slides.out' has not changed.
 (rerunfilecheck)             Checksum: 21DB8A2D9B9A6D2FFAA80A0554AD186F;822.
  ) 
 Here is how much of TeX's memory you used:
- 27900 strings out of 478287
- 538409 string characters out of 5849290
- 911771 words of memory out of 5000000
- 45413 multiletter control sequences out of 15000+600000
+ 27908 strings out of 478287
+ 538694 string characters out of 5849290
+ 911770 words of memory out of 5000000
+ 45420 multiletter control sequences out of 15000+600000
  487991 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,15n,122p,843b,765s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1426,10 +1427,10 @@ m-super/sfss0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfss1000.pfb
 ></usr/share/texmf/fonts/type1/public/cm-super/sfss1095.pfb></usr/share/texmf/f
 onts/type1/public/cm-super/sfss1440.pfb></usr/share/texmf/fonts/type1/public/cm
 -super/sfsx1440.pfb>
-Output written on Slides.pdf (10 pages, 2111219 bytes).
+Output written on Slides.pdf (10 pages, 2134470 bytes).
 PDF statistics:
- 410 PDF objects out of 1000 (max. 8388607)
+ 412 PDF objects out of 1000 (max. 8388607)
  357 compressed objects within 4 object streams
  42 named destinations out of 1000 (max. 500000)
- 145 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 150 words of extra memory for PDF output out of 10000 (max. 10000000)
 
