@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.6.9)  15 SEP 2025 18:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.6.9)  15 SEP 2025 18:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1275,44 +1275,44 @@ Package caption Info: End \AtBeginDocument code.
 <Images/logo-uniurb-2016.jpg, id=42, 595.22375pt x 314.17375pt>
 File: Images/logo-uniurb-2016.jpg Graphic file (type jpg)
 <use Images/logo-uniurb-2016.jpg>
-Package pdftex.def Info: Images/logo-uniurb-2016.jpg  used on input line 130.
+Package pdftex.def Info: Images/logo-uniurb-2016.jpg  used on input line 126.
 (pdftex.def)             Requested size: 119.04263pt x 62.83363pt.
  [1.1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./Images/logo-uniurb-2016.
 jpg>]
 LaTeX Font Info:    Trying to load font information for FML+futmi on input line
- 141.
+ 137.
 
 (/usr/share/texlive/texmf-dist/tex/latex/fourier/fmlfutmi.fd
 File: fmlfutmi.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futmi.
 )
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 141.
+(Font)              scaled to size 10.07397pt on input line 137.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 141.
+(Font)              scaled to size 7.63599pt on input line 137.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 141.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 141
+(Font)              scaled to size 5.51999pt on input line 137.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 137
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 141
+LaTeX Font Info:    Trying to load font information for U+msb on input line 137
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 141.
+(Font)              scaled to size 10.07397pt on input line 137.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 141.
+(Font)              scaled to size 7.63599pt on input line 137.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 141.
+(Font)              scaled to size 5.51999pt on input line 137.
 LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on inp
-ut line 141.
+ut line 137.
 
 (/usr/share/texlive/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/ma
@@ -1326,37 +1326,33 @@ thkerncmss.
 <Images/Logo.png, id=151, 1027.84pt x 1027.84pt>
 File: Images/Logo.png Graphic file (type png)
 <use Images/Logo.png>
-Package pdftex.def Info: Images/Logo.png  used on input line 156.
-(pdftex.def)             Requested size: 133.62389pt x 133.62389pt.
-
-Overfull \vbox (14.16045pt too high) detected at line 156
- []
-
-[4.4
+Package pdftex.def Info: Images/Logo.png  used on input line 152.
+(pdftex.def)             Requested size: 143.89662pt x 143.89662pt.
+ [4.4
 
  <./Images/Logo.png>]
-<Images/schema.png, id=187, 219.9417pt x 142.8537pt>
+<Images/schema.png, id=184, 219.9417pt x 142.8537pt>
 File: Images/schema.png Graphic file (type png)
 <use Images/schema.png>
-Package pdftex.def Info: Images/schema.png  used on input line 167.
-(pdftex.def)             Requested size: 120.96829pt x 78.56976pt.
+Package pdftex.def Info: Images/schema.png  used on input line 163.
+(pdftex.def)             Requested size: 153.95813pt x 99.99689pt.
  [5.5
 
  <./Images/schema.png>]
-<Images/mixer.png, id=223, 1417.54594pt x 601.4972pt>
+<Images/mixer.png, id=219, 1417.54594pt x 601.4972pt>
 File: Images/mixer.png Graphic file (type png)
 <use Images/mixer.png>
-Package pdftex.def Info: Images/mixer.png  used on input line 178.
-(pdftex.def)             Requested size: 255.14726pt x 108.26482pt.
+Package pdftex.def Info: Images/mixer.png  used on input line 174.
+(pdftex.def)             Requested size: 283.50417pt x 120.2973pt.
  [6.6
 
  <./Images/mixer.png (PNG copy)>]
 File: Images/work.jpeg Graphic file (type jpg)
 <use Images/work.jpeg>
-Package pdftex.def Info: Images/work.jpeg  used on input line 196.
+Package pdftex.def Info: Images/work.jpeg  used on input line 192.
 (pdftex.def)             Requested size: 99.371pt x 198.742pt.
 
-Overfull \vbox (4.72993pt too high) detected at line 196
+Overfull \vbox (4.72993pt too high) detected at line 192
  []
 
 [7.7
@@ -1365,20 +1361,20 @@ Overfull \vbox (4.72993pt too high) detected at line 196
 File: Images/trigger_volume_vs_time.png Graphic file (type png)
 <use Images/trigger_volume_vs_time.png>
 Package pdftex.def Info: Images/trigger_volume_vs_time.png  used on input line 
-217.
+212.
 (pdftex.def)             Requested size: 216.81166pt x 86.72466pt.
 
-Overfull \hbox (12.06964pt too wide) in paragraph at lines 217--217
+Overfull \hbox (12.06964pt too wide) in paragraph at lines 212--212
  []|[][][][] 
  []
 
 File: Images/trigger_volume_vs_time.png Graphic file (type png)
 <use Images/trigger_volume_vs_time.png>
 Package pdftex.def Info: Images/trigger_volume_vs_time.png  used on input line 
-217.
+212.
 (pdftex.def)             Requested size: 216.81166pt x 86.72466pt.
 
-Overfull \hbox (12.06964pt too wide) in paragraph at lines 217--217
+Overfull \hbox (12.06964pt too wide) in paragraph at lines 212--212
  []|[][][][] 
  []
 
@@ -1430,10 +1426,10 @@ m-super/sfss0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfss1000.pfb
 ></usr/share/texmf/fonts/type1/public/cm-super/sfss1095.pfb></usr/share/texmf/f
 onts/type1/public/cm-super/sfss1440.pfb></usr/share/texmf/fonts/type1/public/cm
 -super/sfsx1440.pfb>
-Output written on Slides.pdf (10 pages, 2112924 bytes).
+Output written on Slides.pdf (10 pages, 2111219 bytes).
 PDF statistics:
- 414 PDF objects out of 1000 (max. 8388607)
- 361 compressed objects within 4 object streams
+ 410 PDF objects out of 1000 (max. 8388607)
+ 357 compressed objects within 4 object streams
  42 named destinations out of 1000 (max. 500000)
  145 words of extra memory for PDF output out of 10000 (max. 10000000)
 
