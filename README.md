@@ -76,3 +76,21 @@ You get:
 - **Peace:** Bring order to chaotic open spaces.
 - **Metrics:** Finally, proof that Sbregò is too loud.
 - **Hackability:** Extend it, automate alerts, add sensors, whatever you want.
+
+---
+
+<details>
+  <summary> 
+
+  ## 👉 Click here to read the report! 👈
+  
+  </summary>
+
+![0.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/0.png)
+![1.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/1.png)
+![2.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/2.png)
+![3.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/3.png)
+![4.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/4.png)
+![5.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/5.png)
+
+</details>
