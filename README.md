@@ -94,3 +94,23 @@ You get:
 ![5.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_images/5.png)
 
 </details>
+
+<details>
+  <summary> 
+
+  ## 👉 Click here to read the report slides! 👈
+  
+  </summary>
+
+![0.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/0.png)
+![1.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/1.png)
+![2.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/2.png)
+![3.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/3.png)
+![4.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/4.png)
+![5.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/5.png)
+![6.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/6.png)
+![7.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/7.png)
+![8.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/8.png)
+![9.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/9.png)
+
+</details>
