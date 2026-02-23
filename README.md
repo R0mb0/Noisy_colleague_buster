@@ -114,3 +114,11 @@ You get:
 ![9.png](https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Report_slides_images/9.png)
 
 </details>
+
+  <a href="https://github.com/R0mb0/Not_made_by_AI">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/R0mb0/Not_made_by_AI/blob/main/Badge/SVG/NotMadeByAIDark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/R0mb0/Not_made_by_AI/blob/main/Badge/SVG/NotMadeByAILight.svg">
+    <img alt="Not made by AI" src="https://github.com/R0mb0/Not_made_by_AI/blob/main/Badge/SVG/NotMadeByAIDefault.svg">
+  </picture>
+</a>
