@@ -19,6 +19,7 @@ Urbino`s University - Computing and digital innovation - Programmazione per l'in
 <img height="60%" width="60%" src="https://github.com/R0mb0/Noisy_colleague_buster/blob/main/Images/Logo.png" alt="Logo" />
 </div>
 
+[![pages-build-deployment](https://github.com/R0mb0/Noisy_colleague_buster/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/R0mb0/Noisy_colleague_buster/actions/workflows/pages/pages-build-deployment)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1bb60833b43e4ff1b3ff6dc529737e05)](https://app.codacy.com/gh/R0mb0/Noisy_colleague_buster/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/R0mb0/Noisy_colleague_buster)
 [![Open Source Love svg3](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/R0mb0/Noisy_colleague_buster)
